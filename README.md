@@ -5,22 +5,7 @@
 **Design philosophy, unchanged:** this is a systems-design problem wearing a math costume. Every section below exists to protect the discipline that keeps the system honest, regardless of language.
 
 ---
-
-## 0. Honest note before the rework
-
-C++ buys you speed, memory control, and a single deployable binary with no Python runtime in production. It costs you three things worth knowing up front:
-
-1. **Weaker ecosystem for time-series econometrics.** There is no C++ equivalent of `statsmodels`. ARIMA/GARCH/HMM fitting is very doable (it's mostly matrix recursions), but you'll be assembling it from lower-level pieces instead of calling one function.
-2. **Slower research iteration.** Testing a new feature idea in a Jupyter-style loop is faster than in a compiled language. This mostly matters for the *research* side, which is exactly why training stays in Python below.
-3. **More package-management overhead.** `pip install` has no real C++ equivalent in convenience. Use a package manager from day one — **vcpkg** or **Conan** — or you'll spend real time on build plumbing instead of the engine.
-
-None of this is a reason not to do it — plenty of production trading infrastructure is C++ for exactly the reasons above (latency, determinism, no GC pauses). It's just worth knowing which parts of the plan get harder, so the roadmap below prices that in rather than pretending it's free.
-
----
-
 ## 1. The Language Split — What's C++, What Stays Python
-
-**Answer to the "except ML if that's easier in PyTorch" question: yes, and this is the standard pattern, not a compromise.** Nobody hand-writes training loops in LibTorch if they can avoid it — LibTorch's real-world use case is *inference* inside C++ codebases, not day-to-day research. The clean split:
 
 | Stays in Python (offline, not latency-critical) | Lives in C++ (the runtime engine) |
 | --- | --- |

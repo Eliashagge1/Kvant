@@ -1,0 +1,84 @@
+1. Probability & Statistics
+
+Descriptive statistics — mean, variance, standard deviation, skewness, kurtosis (return distributions are fat-tailed, so skew/kurtosis matter more than in generic ML)
+Probability distributions — normal, log-normal (price levels), Student's t (fatter-tailed return modeling)
+Central Limit Theorem & Law of Large Numbers — justifies why aggregated/portfolio-level statistics behave better than single-asset ones
+Conditional probability & Bayes' theorem — regime inference, combining independent signals
+Hypothesis testing & confidence intervals — needed to say whether a backtest result is real or noise
+Correlation vs. causation — guards against building signals on spurious relationships
+Stationarity — most econometric models (ARIMA, regressions) assume it; testing for it (e.g., unit root logic) is a prerequisite, not optional
+
+2. Linear Algebra
+
+Vectors & matrices, matrix multiplication — the base representation for features, covariances, portfolios
+Eigenvalues & eigenvectors — PCA, factor decomposition
+Matrix decompositions — QR and Cholesky (used in Eigen for regression/covariance work), SVD (dimensionality reduction)
+Positive semi-definiteness — a covariance matrix must be PSD or the optimizer (OSQP) will fail or produce nonsense; you need to know how to check/repair this
+Normal equations — closed-form linear regression ((XᵀX)⁻¹XᵀY), used directly via Eigen
+
+3. Calculus
+
+Derivatives & partial derivatives — required to understand what backprop and gradient-based optimizers are actually doing
+Chain rule — backpropagation through neural nets
+Gradient descent / stochastic gradient descent — how PyTorch trains the neural net models
+Lagrange multipliers & KKT conditions — the theory behind constrained optimization (why Markowitz + constraints reduces to a QP)
+Convexity — knowing whether a given optimization problem (e.g., mean-variance) is convex determines whether OSQP is even the right tool
+
+4. Time-Series Econometrics
+
+Autocorrelation & partial autocorrelation (ACF/PACF) — diagnosing structure before fitting ARIMA
+ARIMA (AR, I, MA components) — return/level modeling
+GARCH — volatility clustering, heteroskedasticity modeling (volatility is one of the six predicted outputs in §5)
+Hidden Markov Models — regime state detection
+Kalman filter — both a fitting tool and the online/incremental update mechanism in the self-correction loop (§6)
+Random walk / martingale concepts — the null hypothesis every signal has to beat
+Cointegration (conditional) — only needed if any mean-reversion / pairs-style signal is added later
+
+5. Optimization Theory
+
+Linear programming (conditional) — for simple constraint sets
+Quadratic programming — the Markowitz mean-variance formulation, solved via OSQP
+Convex optimization theory — needed to interpret solver output and set up the objective/constraint matrices correctly
+Numerical optimization (Newton's method / nonlinear least squares) — what Ceres Solver does under the hood if hand-rolling ARIMA/GARCH MLE fitting in C++
+
+6. Machine Learning Math
+
+Loss functions — MSE/MAE for regression targets, cross-entropy for classification-style signals (e.g., direction)
+Bias–variance tradeoff — the conceptual basis for why overfitting checks (§8.3) matter at all
+Regularization (L1/L2, Lasso/Ridge) — controlling model complexity in the non-neural models
+Decision trees & information gain / entropy — the math underneath XGBoost/LightGBM
+Gradient boosting — the additive-model, gradient-descent-in-function-space logic that makes GBM work
+Backpropagation — training the PyTorch models
+Shapley values — the game-theoretic basis of SHAP explainability
+
+7. Quant Finance / Portfolio Math
+
+Modern Portfolio Theory (mean-variance) — the core of the risk & portfolio layer
+Sharpe ratio and Deflated Sharpe Ratio — the two most important "is this signal real" metrics (§7, §8.3)
+Probabilistic Sharpe Ratio (optional, closely related to Deflated Sharpe) — useful complement when reporting confidence in a backtest result
+Information Coefficient (IC) & Information Ratio (IR) — used to evaluate every prediction stream
+Fundamental Law of Active Management (IR ≈ IC × √Breadth) — the first test applied to any new signal (§4, §11)
+Alpha / Beta / factor exposures — one of the six predicted quantities (§5) and a backtesting building block
+Brier score — calibration metric for probabilistic predictions (§11)
+Value at Risk (VaR) / Conditional VaR (Expected Shortfall) (recommended, not explicitly in original doc but standard for a risk layer) — quantifying tail risk beyond variance alone
+Drawdown statistics (max drawdown, drawdown duration) — standard backtest reporting alongside Sharpe/IR
+Transaction cost / market impact modeling — the square-root law (cost ∝ √(order size / ADV)), baked directly into both the backtester fills and the OSQP objective (§7, §8.4)
+Kelly criterion (optional) — relevant if/when position sizing moves beyond simple mean-variance weights
+
+8. Statistical Process Control (Drift Detection)
+
+CUSUM — cumulative sum control chart, the conceptual basis for drift detection
+Page-Hinkley test — the specific algorithm implemented in §6, needs to be understood mathematically (not just copy-pasted) to tune delta/lambda correctly
+Exponentially weighted moving averages (EWMA) — used for ensemble reweighting after confirmed drift
+
+9. Resampling & Simulation
+
+Monte Carlo simulation — general tool for stress-testing and generating confidence intervals
+Bootstrap resampling — specifically bootstrap-resampling trade-level returns for confidence intervals (§7, §8.5), and the basis of purged/embargoed cross-validation logic (§7)
+
+10. Stochastic Calculus (optional — only if trading derivatives)
+
+Brownian motion — the noise model underlying most derivatives pricing
+Itô's lemma — required to derive/understand Black-Scholes-family models
+Black-Scholes and no-arbitrage pricing — what QuantLib implements
+Stochastic differential equations — general framework for continuous-time price models

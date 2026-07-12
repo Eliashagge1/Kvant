@@ -2,10 +2,12 @@
 requires=["setuptools>=69"]
 build-backend="setuptools.build_meta"
 [project]
-name="kvant-research"
-version="0.3.0"
+name="kvant-data-pipeline"
+version="1.0.0"
 requires-python=">=3.11"
-dependencies=["pandas>=2.2","pyarrow>=15"]
+dependencies=["duckdb>=1.1,<2","pandas>=2.2","pyarrow>=15","yfinance>=0.2","requests>=2.31"]
 [project.scripts]
-kvant-ingest-sharadar="kvant_research.providers.sharadar:main"
-kvant-ingest-norgate="kvant_research.providers.norgate:main"
+kvant-bootstrap-alpha="kvant_data.cli:bootstrap_alpha"
+kvant-update-daily="kvant_data.cli:update_daily"
+kvant-bootstrap-yahoo="kvant_data.cli:bootstrap_yahoo"
+kvant-rebuild-adjustments="kvant_data.cli:rebuild"

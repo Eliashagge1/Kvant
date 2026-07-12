@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "base_currency": "SEK",
+  "overlap_sessions": 90,
+  "max_daily_requests": 25,
+  "reserve_daily_requests": 10,
+  "symbols": [
+    {
+      "asset_id": "US:IBM",
+      "provider_symbol": "IBM",
+      "display_symbol": "IBM",
+      "venue": "NYSE",
+      "currency": "USD",
+      "required": true
+    }
+  ]
+}
